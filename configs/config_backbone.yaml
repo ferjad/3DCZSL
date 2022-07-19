@@ -1,0 +1,73 @@
+TASK:
+  "part_segmentation"
+OUTPUT_DIR: 
+  "tmp/logs/backbone/pointnet"
+LOSS:
+  masked: True
+  seg_weight : 1.0
+  cls_weight : 1.0
+MODEL:
+  TYPE: "PointNet" # PN2SSG / PointNet
+  PointNet:
+    graph: False
+    semantic_cls : False
+    graph_init: 'tmp/ckpt/ftgraph.t7'
+    graph_config: 'd1028,d'
+    seg_channels: (256, 256, 300)
+    part_cls: True
+  PartCls:
+    pool: 'max'
+    in_channels: 300
+    channels: (512, 512)
+    part_cls: 1.0
+    part_cls_bce: False
+    global_part_cls: 0.0
+    decomp: 1.0
+    seg_cls: 0.0
+    metric: 'part_cls_acc'
+    global_in_channels: 2048
+    global_part_seg: False
+    cls_mode: True
+    pose: False
+    decomp_segonly: True
+    detach: False
+    graph: False
+    graph_init: 'tmp/ckpt/ftgraph.t7'
+    graph_config: 'd1028,d'
+DATASET:
+  path: 'tmp/c_partnet/'
+  NUM_SEG_CLASSES: 97
+  NUM_CLASSES: 24
+  seen_only: True
+ZERO_SHOT: True
+GLOBAL_LABEL: True
+RESUME_STATES: False # Whether to resume the optimizer and the scheduler
+AUTO_RESUME: False # Automatically resume weights from last checkpoints
+DATALOADER:
+  collate: 'default'
+  NUM_WORKERS: 0
+  KWARGS:
+    num_centroids: 128
+    radius: 0.2
+    num_neighbours: 512
+    with_renorm: True
+    with_resample: False
+    with_shift: False
+    cache_mode: False
+OPTIMIZER:
+  TYPE: "Adam"
+  BASE_LR: 1e-3
+SCHEDULER:
+  TYPE: "StepLR"
+  StepLR:
+    gamma: 0.5
+    step_size: 15
+  CLIP_LR: 1e-5
+  MAX_EPOCH: 120
+TRAIN:
+  BATCH_SIZE: 4
+  LOG_PERIOD: 10
+  VAL_PERIOD: 1
+  CHECKPOINT_PERIOD: 1
+TEST:
+  BATCH_SIZE: 16

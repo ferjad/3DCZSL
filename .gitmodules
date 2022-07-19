@@ -1,0 +1,3 @@
+[submodule "capsnet/ChamferDistancePytorch"]
+	path = capsnet/ChamferDistancePytorch
+	url = https://github.com/ThibaultGROUEIX/ChamferDistancePytorch
